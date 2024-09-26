@@ -243,7 +243,7 @@ if __name__=='__main__':
 
         lr_epoch = new_optimizer.param_groups[0]['lr']
 
-        print(f"EPOCH {epoch:3d}, LR {lr_epoch:.4e} | STAGE: {new_stage.item():.4f}, T LOSS: {train_loss:.4f}, T ACC: {train_acc*100:.2f}%, V LOSS: {val_loss:.4f}, V ACC: {val_acc*100:.2f}% | ENS V ACC: {ensembled_acc*100:.2f}%")
+        print(f"EPOCH {epoch:3d}/{EPOCH:3d}, LR {lr_epoch:.4e} | STAGE: {new_stage.item():.4f}, T LOSS: {train_loss:.4f}, T ACC: {train_acc*100:.2f}%, V LOSS: {val_loss:.4f}, V ACC: {val_acc*100:.2f}% | ENS V ACC: {ensembled_acc*100:.2f}%")
 
         if val_acc > best_acc:
             best_acc = val_acc
