@@ -38,25 +38,36 @@ class dataset():
 
         return img, target
 
-def get_CIFAR10_dataset(root='./data', batch_size=128, augmentation=True):
+cifar10_train_transform = None
+cifar10_test = None
+
+def get_CIFAR10_dataset(root='./data', batch_size=128, augmentation=True, sampler=None):
+    global cifar10_train_transform, cifar10_test
+
     normalize = transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2470, 0.2435, 0.2616])
 
-    train_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
+    if cifar10_train_transform is None:
+        cifar10_train_transform = datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
             transforms.RandomCrop(32, 4),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             normalize,
-        ]), download=True),
-        batch_size=batch_size, shuffle=False,
-        num_workers=4, pin_memory=True)
-
-    val_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10(root=root, train=False, transform=transforms.Compose([
+        ]), download=True)
+    
+    if cifar10_test is None:
+        cifar10_test = datasets.CIFAR10(root=root, train=False, transform=transforms.Compose([
             transforms.ToTensor(),
             normalize,
-        ])),
+        ]), download=True)
+
+    train_loader = torch.utils.data.DataLoader(
+        cifar10_train_transform,
         batch_size=batch_size, shuffle=False,
-        num_workers=4, pin_memory=True)
+        num_workers=16, pin_memory=True, sampler=sampler)
+
+    val_loader = torch.utils.data.DataLoader(
+        cifar10_test,
+        batch_size=batch_size, shuffle=False,
+        num_workers=16, pin_memory=True)
 
     return train_loader, val_loader
