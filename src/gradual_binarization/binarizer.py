@@ -1,6 +1,7 @@
 import torch.nn as nn
 import numpy
 import torch
+from models.resnet9 import BinConv2d
 
 class BinOp():
     def __init__(self, model):
@@ -27,6 +28,20 @@ class BinOp():
                     tmp = m.weight.data.clone()
                     self.saved_params.append(tmp)
                     self.target_modules.append(m.weight)
+        
+        self.model = model
+
+    def full_to_bin(self):
+        # normalize the full-precision weights with the maximum value
+        # then scale the batch normalization layer with the scaling factor
+        for module in self.model.modules():
+            if isinstance(module, BinConv2d):
+                weight = module.conv.weight.data
+                weight_scaler = torch.max(weight.abs(), dim=3, keepdim=True)[0]
+                weight_scaler = torch.max(weight_scaler, dim=2, keepdim=True)[0]
+                weight_scaler = torch.max(weight_scaler, dim=1, keepdim=True)[0]
+                weight = weight.div(weight_scaler)
+                module.bn.weight.data = module.bn.weight.data.mul(weight_scaler.squeeze())
 
     def binarization(self, stochastic=False):
         self.meancenterConvParams()

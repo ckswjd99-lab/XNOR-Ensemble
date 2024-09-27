@@ -19,9 +19,13 @@ from models import ResNet9
 from torch.autograd import Variable
 
 
-EPOCH = 200
+EPOCH = 75
 LR_START = 1e-3
-LR_END = 1e-6
+LR_END = 1e-5
+BATCH_SIZE = 128
+WEIGHT_DECAY = 1e-5
+
+BIN_ACTIVE = False
 
 
 def train(epoch, model, train_loader, optimizer, criterion, bin_op):
@@ -36,7 +40,7 @@ def train(epoch, model, train_loader, optimizer, criterion, bin_op):
     pbar = tqdm(enumerate(train_loader), leave=False, total=len(train_loader))
     for batch_idx, (data, target) in pbar:
         # process the weights including binarization
-        bin_op.binarization()
+        # bin_op.binarization()
         
         # forwarding
         data, target = Variable(data.cuda()), Variable(target.cuda())
@@ -48,8 +52,8 @@ def train(epoch, model, train_loader, optimizer, criterion, bin_op):
         loss.backward()
         
         # restore weights
-        bin_op.restore()
-        bin_op.updateBinaryGradWeight()
+        # bin_op.restore()
+        # bin_op.updateBinaryGradWeight()
         
         optimizer.step()
         
@@ -72,7 +76,7 @@ def train(epoch, model, train_loader, optimizer, criterion, bin_op):
 
 def validate(epoch, model, test_loader, criterion, bin_op):
     model.eval()
-    bin_op.binarization()
+    # bin_op.binarization()
     
     num_data = 0
     num_correct = 0
@@ -95,7 +99,7 @@ def validate(epoch, model, test_loader, criterion, bin_op):
 
         pbar.set_description(f"EPOCH {epoch:3d} | V LOSS: {avg_loss:.4f}, V ACC: {accuracy*100:.4f}%")
 
-    bin_op.restore()
+    # bin_op.restore()
     avg_loss = sum_loss / num_data
     accuracy = num_correct / num_data
     
@@ -112,6 +116,10 @@ def get_CIFAR10_dataset(root='../data', batch_size=128, augmentation=True):
             transforms.ToTensor(),
             normalize,
         ]), download=True),
+        # datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
+        #     transforms.ToTensor(),
+        #     normalize,
+        # ]), download=True),
         batch_size=batch_size, shuffle=False,
         num_workers=4, pin_memory=True)
 
@@ -131,7 +139,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--cpu', action='store_true',
             help='set if only CPU is available')
-    parser.add_argument('--data', action='store', default='./data/',
+    parser.add_argument('--data', action='store', default='../data/',
             help='dataset path')
     parser.add_argument('--arch', action='store', default='resnet9',
             help='the architecture for the network: resnet9')
@@ -150,7 +158,7 @@ if __name__=='__main__':
     torch.manual_seed(1)
     torch.cuda.manual_seed(1)
 
-    trainloader, testloader = get_CIFAR10_dataset(root=args.data, batch_size=128)
+    trainloader, testloader = get_CIFAR10_dataset(root=args.data, batch_size=BATCH_SIZE)
 
     # define classes
     classes = ('plane', 'car', 'bird', 'cat',
@@ -159,7 +167,7 @@ if __name__=='__main__':
     # define the model
     print('==> building model',args.arch,'...')
     if args.arch == 'resnet9':
-        model = ResNet9()
+        model = ResNet9(bin_active=BIN_ACTIVE)
     else:
         raise Exception(args.arch+' is currently not supported')
 
@@ -191,11 +199,7 @@ if __name__=='__main__':
     param_dict = dict(model.named_parameters())
     params = []
 
-    for key, value in param_dict.items():
-        params += [{'params':[value], 'lr': base_lr,
-            'weight_decay':0.00001}]
-
-    optimizer = optim.Adam(params, lr=LR_START, weight_decay=0.00001)
+    optimizer = optim.Adam(model.parameters(), lr=LR_START, weight_decay=WEIGHT_DECAY)
     criterion = nn.CrossEntropyLoss()
     scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=(LR_END/LR_START)**(1/EPOCH))
 
@@ -214,8 +218,12 @@ if __name__=='__main__':
         best_acc = max(val_acc, best_acc)
 
         if args.save:
-            torch.save(model.state_dict(), f"saves/{args.arch}/epoch{epoch:03d}_vacc{int(val_acc*1e+4):04d}.pth")
+            if is_best:
+                torch.save(model.state_dict(), f"saves/{args.arch}/full_best.pth")
 
         print(f"EPOCH {epoch:3d}/{EPOCH:3d}, LR {lr_epoch:.4e} | T LOSS: {train_loss:.4f}, T ACC: {train_acc*100:.2f}%, V LOSS: {val_loss:.4f}, V ACC: {val_acc*100:.2f}%")
     
     print(f"Best accuracy: {best_acc*100:.2f}%")
+    # rename the best model
+    if args.save:
+        os.rename(f"saves/{args.arch}/full_best.pth", f"saves/{args.arch}/full_best_vacc{int(best_acc*1e+4)}.pth")

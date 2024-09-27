@@ -1,5 +1,6 @@
 import torch.nn as nn
 import numpy
+import torch
 
 class BinOp():
     def __init__(self, model):
@@ -55,8 +56,13 @@ class BinOp():
             s = self.target_modules[index].data.size()
             m = self.target_modules[index].data.norm(1, 3, keepdim=True)\
                     .sum(2, keepdim=True).sum(1, keepdim=True).div(n)
-            self.target_modules[index].data = \
-                    self.target_modules[index].data.sign().mul(m.expand(s))
+            # self.target_modules[index].data = \
+            #         self.target_modules[index].data.sign().mul(m.expand(s))
+
+            # stochastic binarization
+            prob = (self.target_modules[index].data + 1) / 2
+            binary = torch.bernoulli(prob)
+            self.target_modules[index].data = binary.mul(2).add(-1).mul(m.expand(s))
 
     def restore(self):
         for index in range(self.num_of_params):

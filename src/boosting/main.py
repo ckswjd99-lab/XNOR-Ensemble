@@ -192,7 +192,7 @@ if __name__=='__main__':
     torch.cuda.manual_seed(1)
 
     # rate the former agents
-    train_loader, test_loader = get_CIFAR10_dataset(root='./data/', batch_size=BATCH_SIZE)
+    train_loader, test_loader = get_CIFAR10_dataset(root='../data/', batch_size=BATCH_SIZE)
     train_dweights = init_dataset_dweight(train_loader)
 
     model_agents = [ResNet9().cuda() for _ in range(len(FORMER_AGENTS))]
@@ -207,7 +207,8 @@ if __name__=='__main__':
         model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
         model.load_state_dict(torch.load(FORMER_AGENTS[idx], weights_only=False))
 
-        stage, train_dweights, agent_t_loss, agent_t_acc = rate_agent(model, binarizer, train_loader, train_dweights)
+        # stage, train_dweights, agent_t_loss, agent_t_acc = rate_agent(model, binarizer, train_loader, train_dweights)
+        stage, train_dweights, agent_t_loss, agent_t_acc = rate_agent(model, binarizer, train_loader, torch.ones(len(train_loader.dataset)).cuda() / len(train_loader.dataset))
         agent_v_loss, agent_v_acc = validate(0, model, test_loader, nn.CrossEntropyLoss().cuda(), binarizer)
         stages.append(stage)
         rated_agents.append((agent_t_loss, agent_t_acc, agent_v_loss, agent_v_acc))
@@ -236,6 +237,7 @@ if __name__=='__main__':
         val_loss, val_acc = validate(epoch, new_model, test_loader, criterion, new_binarizer)
 
         new_stage, _, _, _ = rate_agent(new_model, new_binarizer, train_loader, train_dweights)
+        new_stage = 1
 
         ensembled_acc = validate_ensembled(
             epoch, model_agents, stages, binarizers, new_model, new_stage, new_binarizer, test_loader, criterion

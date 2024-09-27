@@ -19,9 +19,15 @@ from models import ResNet9
 from torch.autograd import Variable
 
 
-EPOCH = 200
+EPOCH = 75
 LR_START = 1e-3
-LR_END = 1e-6
+LR_END = 1e-3
+BATCH_SIZE = 128
+WEIGHT_DECAY = 1e-5
+
+BIN_ACTIVE = True
+
+BASE_MODEL_PATH = 'saves/resnet9/full_best_vacc9054.pth'
 
 
 def train(epoch, model, train_loader, optimizer, criterion, bin_op):
@@ -112,6 +118,10 @@ def get_CIFAR10_dataset(root='../data', batch_size=128, augmentation=True):
             transforms.ToTensor(),
             normalize,
         ]), download=True),
+        # datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
+        #     transforms.ToTensor(),
+        #     normalize,
+        # ]), download=True),
         batch_size=batch_size, shuffle=False,
         num_workers=4, pin_memory=True)
 
@@ -131,7 +141,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--cpu', action='store_true',
             help='set if only CPU is available')
-    parser.add_argument('--data', action='store', default='./data/',
+    parser.add_argument('--data', action='store', default='../data/',
             help='dataset path')
     parser.add_argument('--arch', action='store', default='resnet9',
             help='the architecture for the network: resnet9')
@@ -150,7 +160,7 @@ if __name__=='__main__':
     torch.manual_seed(1)
     torch.cuda.manual_seed(1)
 
-    trainloader, testloader = get_CIFAR10_dataset(root=args.data, batch_size=128)
+    trainloader, testloader = get_CIFAR10_dataset(root=args.data, batch_size=BATCH_SIZE)
 
     # define classes
     classes = ('plane', 'car', 'bird', 'cat',
@@ -159,29 +169,16 @@ if __name__=='__main__':
     # define the model
     print('==> building model',args.arch,'...')
     if args.arch == 'resnet9':
-        model = ResNet9()
+        model = ResNet9(bin_active=BIN_ACTIVE)
     else:
         raise Exception(args.arch+' is currently not supported')
-
-    # initialize the model
-    if not args.pretrained:
-        print('==> Initializing model parameters ...')
-        best_acc = 0
-        for m in model.modules():
-            if isinstance(m, nn.Conv2d):
-                m.weight.data.normal_(0, 0.05)
-                if m.bias is not None:
-                    m.bias.data.zero_()
-    else:
-        print('==> Load pretrained model form', args.pretrained, '...')
-        pretrained_model = torch.load(args.pretrained)
-        best_acc = pretrained_model['best_acc']
-        model.load_state_dict(pretrained_model['state_dict'])
 
     if not args.cpu:
         model.cuda()
         model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
     print(model)
+
+    model.load_state_dict(torch.load(BASE_MODEL_PATH, weights_only=False))
     
     num_params = sum(p.numel() for p in model.parameters())
     print(f"Number of parameters: {num_params:,d}")
@@ -191,16 +188,13 @@ if __name__=='__main__':
     param_dict = dict(model.named_parameters())
     params = []
 
-    for key, value in param_dict.items():
-        params += [{'params':[value], 'lr': base_lr,
-            'weight_decay':0.00001}]
-
-    optimizer = optim.Adam(params, lr=LR_START, weight_decay=0.00001)
+    optimizer = optim.Adam(model.parameters(), lr=LR_START, weight_decay=WEIGHT_DECAY)
     criterion = nn.CrossEntropyLoss()
     scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=(LR_END/LR_START)**(1/EPOCH))
 
     # define the binarization operator
     bin_op = BinOp(model)
+    bin_op.full_to_bin()
 
     # start training
     best_acc = 0.0
@@ -214,8 +208,11 @@ if __name__=='__main__':
         best_acc = max(val_acc, best_acc)
 
         if args.save:
-            torch.save(model.state_dict(), f"saves/{args.arch}/epoch{epoch:03d}_vacc{int(val_acc*1e+4):04d}.pth")
+            if is_best:
+                torch.save(model.state_dict(), f"saves/{args.arch}/xnor_best.pth")
 
-        print(f"EPOCH {epoch:3d}/{EPOCH:3d}, LR {lr_epoch:.4e} | T LOSS: {train_loss:.4f}, T ACC: {train_acc*100:.2f}%, V LOSS: {val_loss:.4f}, V ACC: {val_acc*100:.2f}%")
+        print(f"EPOCH {epoch:3d}/{EPOCH:3d}, LR {lr_epoch:.4e} | T LOSS: {train_loss:.4f}, T ACC: {train_acc*100:.2f}%, V LOSS: {val_loss:.4f}, V ACC: {val_acc*100:.2f}% | " + ("*" if is_best else ""))
     
     print(f"Best accuracy: {best_acc*100:.2f}%")
+
+    os.rename(f"saves/{args.arch}/xnor_best.pth", f"saves/{args.arch}/xnor_best_vacc{best_acc*100:.2f}.pth")
