@@ -13,15 +13,21 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 
+from torch.utils.data import Dataset, DataLoader, random_split
+
+
 from tqdm import tqdm
 
 from models import ResNet9
 from torch.autograd import Variable
 
 
-EPOCH = 200
+EPOCH = 100
+BATCH_SIZE = 32
 LR_START = 1e-3
-LR_END = 1e-6
+LR_END = 1e-5
+
+NUM_LEARNERS = 4
 
 
 def train(epoch, model, train_loader, optimizer, criterion, bin_op):
@@ -102,28 +108,31 @@ def validate(epoch, model, test_loader, criterion, bin_op):
     return avg_loss, accuracy
 
 
-def get_CIFAR10_dataset(root='../data', batch_size=128, augmentation=True):
+def get_CIFAR10_dataset(root='../data', batch_size=128, num_split=4):
     normalize = transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2470, 0.2435, 0.2616])
 
-    train_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
+    train_dataset = datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
             transforms.RandomCrop(32, 4),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             normalize,
-        ]), download=True),
-        batch_size=batch_size, shuffle=False,
-        num_workers=4, pin_memory=True)
-
-    val_loader = torch.utils.data.DataLoader(
-        datasets.CIFAR10(root=root, train=False, transform=transforms.Compose([
+        ]), download=True)
+    
+    splitted_train_datasets = random_split(train_dataset, [len(train_dataset)//num_split]*num_split)
+    
+    test_dataset = datasets.CIFAR10(root=root, train=False, transform=transforms.Compose([
             transforms.ToTensor(),
             normalize,
-        ])),
-        batch_size=batch_size, shuffle=False,
-        num_workers=4, pin_memory=True)
+        ]))
+    
+    train_loaders = [
+        DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+        for dataset in splitted_train_datasets
+    ]
 
-    return train_loader, val_loader
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
+
+    return train_loaders, test_loader
 
 
 if __name__=='__main__':
@@ -150,75 +159,101 @@ if __name__=='__main__':
     torch.manual_seed(1)
     torch.cuda.manual_seed(1)
 
-    trainloader, testloader = get_CIFAR10_dataset(root=args.data, batch_size=128)
-
-    # define classes
-    classes = ('plane', 'car', 'bird', 'cat',
-            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+    train_loaders, test_loader = get_CIFAR10_dataset(root=args.data, batch_size=BATCH_SIZE, num_split=NUM_LEARNERS)
 
     # define the model
-    print('==> building model',args.arch,'...')
-    if args.arch == 'resnet9':
-        model = ResNet9()
-    else:
-        raise Exception(args.arch+' is currently not supported')
+    models = [ResNet9() for _ in range(NUM_LEARNERS)]
 
     # initialize the model
-    if not args.pretrained:
-        print('==> Initializing model parameters ...')
-        best_acc = 0
+    best_acc = 0
+    for model in models:
+        model.cuda()
         for m in model.modules():
             if isinstance(m, nn.Conv2d):
                 m.weight.data.normal_(0, 0.05)
                 if m.bias is not None:
                     m.bias.data.zero_()
-    else:
-        print('==> Load pretrained model form', args.pretrained, '...')
-        pretrained_model = torch.load(args.pretrained)
-        best_acc = pretrained_model['best_acc']
-        model.load_state_dict(pretrained_model['state_dict'])
 
-    if not args.cpu:
-        model.cuda()
-        model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
-    print(model)
-    
     num_params = sum(p.numel() for p in model.parameters())
     print(f"Number of parameters: {num_params:,d}")
+    print()
 
-    # define solver and criterion
-    base_lr = float(args.lr)
-    param_dict = dict(model.named_parameters())
-    params = []
+    binarizers = [BinOp(model) for model in models]
+    optimizers = [optim.Adam(model.parameters(), lr=LR_START, weight_decay=0.00001) for model in models]
+    schedulers = [optim.lr_scheduler.ExponentialLR(optimizer, gamma=(LR_END/LR_START)**(1/EPOCH)) for optimizer in optimizers]
 
-    for key, value in param_dict.items():
-        params += [{'params':[value], 'lr': base_lr,
-            'weight_decay':0.00001}]
-
-    optimizer = optim.Adam(params, lr=LR_START, weight_decay=0.00001)
     criterion = nn.CrossEntropyLoss()
-    scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=(LR_END/LR_START)**(1/EPOCH))
-
-    # define the binarization operator
-    bin_op = BinOp(model)
 
     # start training
-    best_acc = 0.0
-    for epoch in range(1, EPOCH+1):
-        lr_epoch = optimizer.param_groups[0]['lr']
+    for model_idx, train_loader, model, bin_op, optimizer, scheduler in zip(range(NUM_LEARNERS), train_loaders, models, binarizers, optimizers, schedulers):
+        print(f"Training learner {model_idx:02d}")
+        
+        best_acc = 0.0
 
-        train_loss, train_acc = train(epoch, model, trainloader, optimizer, criterion, bin_op)
-        val_loss, val_acc = validate(epoch, model, testloader, criterion, bin_op)
+        for epoch in range(1, EPOCH+1):
+            lr_epoch = optimizer.param_groups[0]['lr']
 
-        is_best = val_acc > best_acc
-        best_acc = max(val_acc, best_acc)
+            train_loss, train_acc = train(epoch, model, train_loader, optimizer, criterion, bin_op)
+            val_loss, val_acc = validate(epoch, model, test_loader, criterion, bin_op)
 
-        if args.save and is_best:
-            torch.save(model.state_dict(), f"saves/{args.arch}/model_best.pth")
+            is_best = val_acc > best_acc
+            best_acc = max(val_acc, best_acc)
 
-        print(f"EPOCH {epoch:3d}/{EPOCH:3d}, LR {lr_epoch:.4e} | T LOSS: {train_loss:.4f}, T ACC: {train_acc*100:.2f}%, V LOSS: {val_loss:.4f}, V ACC: {val_acc*100:.2f}%")
+            if args.save and is_best:
+                torch.save(model.state_dict(), f"saves/{args.arch}/learner{model_idx:02d}_model_best.pth")
+
+            print(
+                f"EPOCH {epoch:3d}/{EPOCH:3d}, LR {lr_epoch:.4e} | T LOSS: {train_loss:.4f}, T ACC: {train_acc*100:.2f}%, V LOSS: {val_loss:.4f}, V ACC: {val_acc*100:.2f}% |"
+                + (" *" if is_best else "")
+            )
+        
+        print(f"Best accuracy: {best_acc*100:.2f}%")
+
+        if args.save:
+            model.load_state_dict(torch.load(f"saves/{args.arch}/learner{model_idx:02d}_model_best.pth"))
+            torch.save(model.state_dict(), f"saves/{args.arch}/learner{model_idx:02d}_final_vacc{int(best_acc*1e4)}.pth")
+        
+        print()
+
+    # evaluate each model
+    for model_idx, model, bin_op in zip(range(NUM_LEARNERS), models, binarizers):
+        print(f"Evaluating learner {model_idx:02d}")
+        
+        bin_op.binarization()
+
+        model.eval()
+        num_data = 0
+        num_correct = 0
+
+        for batch_idx, (data, target) in enumerate(test_loader):
+            data, target = Variable(data.cuda()), Variable(target.cuda())
+            
+            output = torch.nn.functional.softmax(model(data), dim=1)
+            _, predicted = torch.max(output.data, 1)
+            num_data += target.size(0)
+            num_correct += (predicted == target).sum().item()
+
+        accuracy = num_correct / num_data
+        print(f"Learner {model_idx:02d} accuracy: {accuracy*100:.2f}%")
+
+        bin_op.restore()
+
+    # ensemble and evaluate
+    print(f"Ensemble {NUM_LEARNERS} learners")
+
+    num_data = 0
+    num_correct = 0
+
+    for batch_idx, (data, target) in enumerate(test_loader):
+        data, target = Variable(data.cuda()), Variable(target.cuda())
+        
+        outputs = [torch.nn.functional.softmax(model(data), dim=1) for model in models]
+        output = sum(outputs)
+        
+        _, predicted = torch.max(output.data, 1)
+        num_data += target.size(0)
+        num_correct += (predicted == target).sum().item()
+
+    accuracy = num_correct / num_data
+    print(f"Ensemble accuracy: {accuracy*100:.2f}%")
     
-    print(f"Best accuracy: {best_acc*100:.2f}%")
-
-    if args.save:
-        torch.save(model.state_dict(), f"saves/{args.arch}/model_final_vacc{int(best_acc*1e4)}.pth")

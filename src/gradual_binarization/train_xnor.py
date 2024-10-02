@@ -19,9 +19,9 @@ from models import ResNet9
 from torch.autograd import Variable
 
 
-EPOCH = 75
+EPOCH = 20
 LR_START = 1e-3
-LR_END = 1e-3
+LR_END = 1e-5
 BATCH_SIZE = 128
 WEIGHT_DECAY = 1e-5
 
@@ -118,10 +118,6 @@ def get_CIFAR10_dataset(root='../data', batch_size=128, augmentation=True):
             transforms.ToTensor(),
             normalize,
         ]), download=True),
-        # datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
-        #     transforms.ToTensor(),
-        #     normalize,
-        # ]), download=True),
         batch_size=batch_size, shuffle=False,
         num_workers=4, pin_memory=True)
 
@@ -215,4 +211,5 @@ if __name__=='__main__':
     
     print(f"Best accuracy: {best_acc*100:.2f}%")
 
-    os.rename(f"saves/{args.arch}/xnor_best.pth", f"saves/{args.arch}/xnor_best_vacc{best_acc*100:.2f}.pth")
+    if args.save:
+        os.rename(f"saves/{args.arch}/xnor_best.pth", f"saves/{args.arch}/xnor_best_vacc{best_acc*100:.2f}.pth")

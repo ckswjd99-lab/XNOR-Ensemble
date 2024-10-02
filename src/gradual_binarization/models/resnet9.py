@@ -14,8 +14,7 @@ class BinActive(torch.autograd.Function):
         size = input.size()
         mean = torch.mean(input.abs(), 1, keepdim=True)
         if activate:
-            input = input.clamp(-1.0, 1.0)
-            # input = input.sign()
+            input = input.sign()
         
         return input, mean
 
