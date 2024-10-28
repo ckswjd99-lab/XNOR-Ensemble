@@ -16,9 +16,44 @@ IMNET_DIR = '/data/imagenet'
 NUM_WORKERS = 16
 
 
-def get_imnet1k_dataloader(root=IMNET_DIR, batch_size=128, augmentation=False):
+def get_CIFAR10_dataset(root='./data', batch_size=128, hard_aug=True):
+    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+
+    if hard_aug:
+        train_loader = torch.utils.data.DataLoader(
+            datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomCrop(32, 4),
+                transforms.ToTensor(),
+                normalize,
+            ]), download=True),
+            batch_size=batch_size, shuffle=False,
+            num_workers=1, pin_memory=True)
+    else:
+        train_loader = torch.utils.data.DataLoader(
+            datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomCrop(32, 4),
+                transforms.ToTensor(),
+                normalize,
+            ]), download=True),
+            batch_size=batch_size, shuffle=False,
+            num_workers=1, pin_memory=True)
+
+    val_loader = torch.utils.data.DataLoader(
+        datasets.CIFAR10(root=root, train=False, transform=transforms.Compose([
+            transforms.ToTensor(),
+            normalize,
+        ])),
+        batch_size=batch_size, shuffle=False,
+        num_workers=1, pin_memory=True)
+
+    return train_loader, val_loader
+
+
+def get_imnet1k_dataloader(root=IMNET_DIR, batch_size=128, augmentation="noaug"):
     dataset_train, nb_classes = build_dataset(is_train=True, input_size=224, augmentation=augmentation)
-    dataset_val, _ = build_dataset(is_train=False, input_size=224, augmentation=False)
+    dataset_val, _ = build_dataset(is_train=False, input_size=224, augmentation=augmentation)
 
     train_loader = torch.utils.data.DataLoader(
         dataset_train, 
@@ -38,7 +73,7 @@ def get_imnet1k_dataloader(root=IMNET_DIR, batch_size=128, augmentation=False):
     return train_loader, val_loader
 
 
-def build_dataset(is_train, input_size=224, augmentation=False):
+def build_dataset(is_train, input_size=224, augmentation="noaug"):
     transform = build_transform(is_train, input_size, augmentation)
 
     root = os.path.join(IMNET_DIR, 'train' if is_train else 'val')
@@ -48,7 +83,7 @@ def build_dataset(is_train, input_size=224, augmentation=False):
     return dataset, nb_classes
 
 
-def build_transform(is_train, input_size=224, augmentation=False):
+def build_transform(is_train, input_size=224, augmentation="noaug"):
     resize_im = input_size > 32
     if is_train:
         if augmentation == "noaug":

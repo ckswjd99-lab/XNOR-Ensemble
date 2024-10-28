@@ -17,6 +17,7 @@ def train(epoch, model, train_loader, optimizer, criterion, bin_op):
         # process the weights including binarization
         optimizer.zero_grad()
         bin_op.binarization()
+        # bin_op.quantization(16)
         
         # forwarding
         data, target = data.cuda(), target.cuda()
