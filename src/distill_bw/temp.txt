@@ -1,0 +1,173 @@
+(dl-default) ckswjd99@gpu-1:~/workspace/XNOR-Ensemble/src/distill_bw$ python distill_bw.py 
+Teacher: saves/resnet20-12fca82f.th
+Colleagues: []
+Current: saves/resnet20_bw_distilled_00.pth
+Files already downloaded and verified
+Teacher: V LOSS: 0.3727, V ACC: 91.73%                                                                                                                        
+EPOCH   0, LR: 1.0000e-03 | T LOSS: 0.0836, T ACC: 72.42%, V LOSS: 0.8261, V ACC: 75.47% | ETA:       45 sec                                                  
+EPOCH   1, LR: 7.8476e-04 | T LOSS: 0.0433, T ACC: 84.28%, V LOSS: 0.5522, V ACC: 82.11% | ETA:       44 sec                                                  
+EPOCH   2, LR: 6.1585e-04 | T LOSS: 0.0366, T ACC: 86.65%, V LOSS: 0.6417, V ACC: 78.97% | ETA:       44 sec                                                  
+EPOCH   3, LR: 4.8329e-04 | T LOSS: 0.0326, T ACC: 87.90%, V LOSS: 0.4975, V ACC: 84.23% | ETA:       42 sec                                                  
+EPOCH   4, LR: 3.7927e-04 | T LOSS: 0.0299, T ACC: 89.00%, V LOSS: 0.5396, V ACC: 82.89% | ETA:       45 sec                                                  
+EPOCH   5, LR: 2.9764e-04 | T LOSS: 0.0280, T ACC: 89.53%, V LOSS: 0.4910, V ACC: 84.38% | ETA:       44 sec                                                  
+EPOCH   6, LR: 2.3357e-04 | T LOSS: 0.0261, T ACC: 90.16%, V LOSS: 0.4825, V ACC: 84.31% | ETA:       42 sec                                                  
+EPOCH   7, LR: 1.8330e-04 | T LOSS: 0.0252, T ACC: 90.47%, V LOSS: 0.4391, V ACC: 86.25% | ETA:       43 sec                                                  
+EPOCH   8, LR: 1.4384e-04 | T LOSS: 0.0238, T ACC: 90.89%, V LOSS: 0.5137, V ACC: 84.45% | ETA:       44 sec                                                  
+EPOCH   9, LR: 1.1288e-04 | T LOSS: 0.0230, T ACC: 91.33%, V LOSS: 0.5074, V ACC: 84.84% | ETA:       43 sec                                                  
+EPOCH  10, LR: 8.8587e-05 | T LOSS: 0.0220, T ACC: 91.66%, V LOSS: 0.3867, V ACC: 87.92% | ETA:       41 sec                                                  
+EPOCH  11, LR: 6.9519e-05 | T LOSS: 0.0210, T ACC: 92.06%, V LOSS: 0.3988, V ACC: 87.40% | ETA:       45 sec                                                  
+EPOCH  12, LR: 5.4556e-05 | T LOSS: 0.0206, T ACC: 92.12%, V LOSS: 0.4082, V ACC: 87.19% | ETA:       44 sec                                                  
+EPOCH  13, LR: 4.2813e-05 | T LOSS: 0.0202, T ACC: 92.32%, V LOSS: 0.4511, V ACC: 86.04% | ETA:       44 sec                                                  
+EPOCH  14, LR: 3.3598e-05 | T LOSS: 0.0193, T ACC: 92.67%, V LOSS: 0.4344, V ACC: 86.40% | ETA:       42 sec                                                  
+EPOCH  15, LR: 2.6367e-05 | T LOSS: 0.0193, T ACC: 92.62%, V LOSS: 0.3876, V ACC: 87.85% | ETA:       44 sec                                                  
+EPOCH  16, LR: 2.0691e-05 | T LOSS: 0.0189, T ACC: 92.87%, V LOSS: 0.4393, V ACC: 86.29% | ETA:       44 sec                                                  
+EPOCH  17, LR: 1.6238e-05 | T LOSS: 0.0184, T ACC: 93.01%, V LOSS: 0.3896, V ACC: 87.77% | ETA:       41 sec                                                  
+EPOCH  18, LR: 1.2743e-05 | T LOSS: 0.0181, T ACC: 93.00%, V LOSS: 0.3912, V ACC: 87.67% | ETA:       44 sec                                                  
+EPOCH  19, LR: 1.0000e-05 | T LOSS: 0.0181, T ACC: 92.91%, V LOSS: 0.4519, V ACC: 86.28% | ETA:       44 sec                                                  
+(dl-default) ckswjd99@gpu-1:~/workspace/XNOR-Ensemble/src/distill_bw$ python distill_bw.py 
+Teacher: saves/resnet20-12fca82f.th
+Colleagues: ['saves/resnet20_bw_distilled_00_final.pth']
+Current: saves/resnet20_bw_distilled_01.pth
+Files already downloaded and verified
+Teacher: V LOSS: 0.3727, V ACC: 91.73%                                                                                                                        
+Colleague saves/resnet20_bw_distilled_00_final.pth: V LOSS: 0.3867, V ACC: 87.92%                                                                             
+EPOCH   0, LR: 1.0000e-03 | T LOSS: 0.0860, T ACC: 72.06%, V LOSS: 0.3773, V ACC: 87.48% | ETA:       32 sec                                                  
+EPOCH   1, LR: 7.8476e-04 | T LOSS: 0.0454, T ACC: 84.22%, V LOSS: 0.3655, V ACC: 87.97% | ETA:       31 sec                                                  
+EPOCH   2, LR: 6.1585e-04 | T LOSS: 0.0379, T ACC: 86.65%, V LOSS: 0.3652, V ACC: 88.09% | ETA:       31 sec                                                  
+EPOCH   3, LR: 4.8329e-04 | T LOSS: 0.0344, T ACC: 87.97%, V LOSS: 0.3408, V ACC: 88.71% | ETA:       31 sec                                                  
+EPOCH   4, LR: 3.7927e-04 | T LOSS: 0.0321, T ACC: 88.64%, V LOSS: 0.3404, V ACC: 88.86% | ETA:       31 sec                                                  
+EPOCH   5, LR: 2.9764e-04 | T LOSS: 0.0297, T ACC: 89.63%, V LOSS: 0.3521, V ACC: 88.79% | ETA:       31 sec                                                  
+EPOCH   6, LR: 2.3357e-04 | T LOSS: 0.0282, T ACC: 90.19%, V LOSS: 0.3528, V ACC: 88.54% | ETA:       31 sec                                                  
+EPOCH   7, LR: 1.8330e-04 | T LOSS: 0.0272, T ACC: 90.46%, V LOSS: 0.3355, V ACC: 89.26% | ETA:       31 sec                                                  
+EPOCH   8, LR: 1.4384e-04 | T LOSS: 0.0258, T ACC: 90.99%, V LOSS: 0.3488, V ACC: 88.37% | ETA:       30 sec                                                  
+EPOCH   9, LR: 1.1288e-04 | T LOSS: 0.0252, T ACC: 91.03%, V LOSS: 0.3390, V ACC: 88.79% | ETA:       31 sec                                                  
+EPOCH  10, LR: 8.8587e-05 | T LOSS: 0.0242, T ACC: 91.60%, V LOSS: 0.3469, V ACC: 88.52% | ETA:       31 sec                                                  
+EPOCH  11, LR: 6.9519e-05 | T LOSS: 0.0237, T ACC: 91.74%, V LOSS: 0.3380, V ACC: 88.91% | ETA:       31 sec                                                  
+EPOCH  12, LR: 5.4556e-05 | T LOSS: 0.0230, T ACC: 92.01%, V LOSS: 0.3420, V ACC: 89.13% | ETA:       31 sec                                                  
+EPOCH  13, LR: 4.2813e-05 | T LOSS: 0.0221, T ACC: 92.24%, V LOSS: 0.3401, V ACC: 89.03% | ETA:       31 sec                                                  
+EPOCH  14, LR: 3.3598e-05 | T LOSS: 0.0219, T ACC: 92.58%, V LOSS: 0.3503, V ACC: 88.51% | ETA:       31 sec                                                  
+EPOCH  15, LR: 2.6367e-05 | T LOSS: 0.0215, T ACC: 92.54%, V LOSS: 0.3292, V ACC: 89.26% | ETA:       29 sec                                                  
+EPOCH  16, LR: 2.0691e-05 | T LOSS: 0.0211, T ACC: 92.63%, V LOSS: 0.3336, V ACC: 89.16% | ETA:       23 sec                                                  
+EPOCH  17, LR: 1.6238e-05 | T LOSS: 0.0208, T ACC: 92.69%, V LOSS: 0.3363, V ACC: 89.08% | ETA:       23 sec                                                  
+EPOCH  18, LR: 1.2743e-05 | T LOSS: 0.0205, T ACC: 93.04%, V LOSS: 0.3552, V ACC: 88.52% | ETA:       23 sec                                                  
+EPOCH  19, LR: 1.0000e-05 | T LOSS: 0.0201, T ACC: 92.87%, V LOSS: 0.3367, V ACC: 88.90% | ETA:       33 sec                                                  
+(dl-default) ckswjd99@gpu-1:~/workspace/XNOR-Ensemble/src/distill_bw$ python distill_bw.py 
+Teacher: saves/resnet20-12fca82f.th
+Colleagues: ['saves/resnet20_bw_distilled_01_final.pth', 'saves/resnet20_bw_distilled_00_final.pth']
+Current: saves/resnet20_bw_distilled_02.pth
+Files already downloaded and verified
+Teacher: V LOSS: 0.3727, V ACC: 91.73%                                                                                                                        
+Colleague saves/resnet20_bw_distilled_01_final.pth: V LOSS: 0.4923, V ACC: 84.26%                                                                             
+Colleague saves/resnet20_bw_distilled_00_final.pth: V LOSS: 0.3867, V ACC: 87.92%                                                                             
+EPOCH   0, LR: 1.0000e-03 | T LOSS: 0.0870, T ACC: 71.95%, V LOSS: 0.3416, V ACC: 88.40% | ETA:       50 sec                                                  
+EPOCH   1, LR: 7.8476e-04 | T LOSS: 0.0471, T ACC: 84.09%, V LOSS: 0.3399, V ACC: 88.62% | ETA:       52 sec                                                  
+EPOCH   2, LR: 6.1585e-04 | T LOSS: 0.0400, T ACC: 86.49%, V LOSS: 0.3265, V ACC: 89.08% | ETA:       53 sec                                                  
+EPOCH   3, LR: 4.8329e-04 | T LOSS: 0.0357, T ACC: 88.03%, V LOSS: 0.3250, V ACC: 89.02% | ETA:       51 sec                                                  
+EPOCH   4, LR: 3.7927e-04 | T LOSS: 0.0335, T ACC: 88.75%, V LOSS: 0.3294, V ACC: 88.84% | ETA:       51 sec                                                  
+EPOCH   5, LR: 2.9764e-04 | T LOSS: 0.0316, T ACC: 89.26%, V LOSS: 0.3224, V ACC: 89.23% | ETA:       52 sec                                                  
+EPOCH   6, LR: 2.3357e-04 | T LOSS: 0.0299, T ACC: 90.01%, V LOSS: 0.3168, V ACC: 89.42% | ETA:       52 sec                                                  
+EPOCH   7, LR: 1.8330e-04 | T LOSS: 0.0288, T ACC: 90.38%, V LOSS: 0.3216, V ACC: 89.17% | ETA:       50 sec                                                  
+EPOCH   8, LR: 1.4384e-04 | T LOSS: 0.0274, T ACC: 90.83%, V LOSS: 0.3180, V ACC: 89.31% | ETA:       52 sec                                                  
+EPOCH   9, LR: 1.1288e-04 | T LOSS: 0.0267, T ACC: 91.28%, V LOSS: 0.3108, V ACC: 89.72% | ETA:       52 sec                                                  
+EPOCH  10, LR: 8.8587e-05 | T LOSS: 0.0256, T ACC: 91.51%, V LOSS: 0.3169, V ACC: 89.69% | ETA:       49 sec                                                  
+EPOCH  11, LR: 6.9519e-05 | T LOSS: 0.0250, T ACC: 91.71%, V LOSS: 0.3273, V ACC: 89.12% | ETA:       52 sec                                                  
+EPOCH  12, LR: 5.4556e-05 | T LOSS: 0.0242, T ACC: 92.03%, V LOSS: 0.3291, V ACC: 89.08% | ETA:       52 sec                                                  
+EPOCH  13, LR: 4.2813e-05 | T LOSS: 0.0235, T ACC: 92.34%, V LOSS: 0.3173, V ACC: 89.33% | ETA:       49 sec                                                  
+EPOCH  14, LR: 3.3598e-05 | T LOSS: 0.0231, T ACC: 92.41%, V LOSS: 0.3095, V ACC: 89.71% | ETA:       52 sec                                                  
+EPOCH  15, LR: 2.6367e-05 | T LOSS: 0.0229, T ACC: 92.39%, V LOSS: 0.3112, V ACC: 89.67% | ETA:       52 sec                                                  
+EPOCH  16, LR: 2.0691e-05 | T LOSS: 0.0221, T ACC: 92.82%, V LOSS: 0.3125, V ACC: 89.70% | ETA:       50 sec                                                  
+EPOCH  17, LR: 1.6238e-05 | T LOSS: 0.0218, T ACC: 92.92%, V LOSS: 0.3130, V ACC: 89.57% | ETA:       52 sec                                                  
+EPOCH  18, LR: 1.2743e-05 | T LOSS: 0.0218, T ACC: 92.84%, V LOSS: 0.3111, V ACC: 89.60% | ETA:       52 sec                                                  
+EPOCH  19, LR: 1.0000e-05 | T LOSS: 0.0211, T ACC: 93.09%, V LOSS: 0.3098, V ACC: 89.78% | ETA:       52 sec                                                  
+(dl-default) ckswjd99@gpu-1:~/workspace/XNOR-Ensemble/src/distill_bw$ python distill_bw.py 
+Teacher: saves/resnet20-12fca82f.th
+Colleagues: ['saves/resnet20_bw_distilled_02_final.pth', 'saves/resnet20_bw_distilled_01_final.pth', 'saves/resnet20_bw_distilled_00_final.pth']
+Current: saves/resnet20_bw_distilled_03.pth
+Files already downloaded and verified
+Teacher: V LOSS: 0.3727, V ACC: 91.73%                                                                                                                        
+Colleague saves/resnet20_bw_distilled_02_final.pth: V LOSS: 0.3682, V ACC: 88.55%                                                                             
+Colleague saves/resnet20_bw_distilled_01_final.pth: V LOSS: 0.4923, V ACC: 84.26%                                                                             
+Colleague saves/resnet20_bw_distilled_00_final.pth: V LOSS: 0.3867, V ACC: 87.92%                                                                             
+EPOCH   0, LR: 1.0000e-03 | T LOSS: 0.0883, T ACC: 71.65%, V LOSS: 0.3116, V ACC: 89.27% | ETA:       57 sec                                                  
+EPOCH   1, LR: 7.8476e-04 | T LOSS: 0.0482, T ACC: 83.79%, V LOSS: 0.3104, V ACC: 89.55% | ETA:       56 sec                                                  
+EPOCH   2, LR: 6.1585e-04 | T LOSS: 0.0412, T ACC: 86.31%, V LOSS: 0.3045, V ACC: 89.67% | ETA:       56 sec                                                  
+EPOCH   3, LR: 4.8329e-04 | T LOSS: 0.0370, T ACC: 87.79%, V LOSS: 0.3064, V ACC: 89.75% | ETA:       57 sec                                                  
+EPOCH   4, LR: 3.7927e-04 | T LOSS: 0.0349, T ACC: 88.47%, V LOSS: 0.3102, V ACC: 89.54% | ETA:       56 sec                                                  
+EPOCH   5, LR: 2.9764e-04 | T LOSS: 0.0328, T ACC: 89.27%, V LOSS: 0.3061, V ACC: 89.86% | ETA:       56 sec                                                  
+EPOCH   6, LR: 2.3357e-04 | T LOSS: 0.0313, T ACC: 89.85%, V LOSS: 0.3065, V ACC: 89.89% | ETA:       58 sec                                                  
+EPOCH   7, LR: 1.8330e-04 | T LOSS: 0.0294, T ACC: 90.50%, V LOSS: 0.3135, V ACC: 89.58% | ETA:       56 sec                                                  
+EPOCH   8, LR: 1.4384e-04 | T LOSS: 0.0283, T ACC: 90.88%, V LOSS: 0.3033, V ACC: 89.91% | ETA:       56 sec                                                  
+EPOCH   9, LR: 1.1288e-04 | T LOSS: 0.0276, T ACC: 91.09%, V LOSS: 0.2976, V ACC: 90.06% | ETA:       57 sec                                                  
+EPOCH  10, LR: 8.8587e-05 | T LOSS: 0.0268, T ACC: 91.37%, V LOSS: 0.3013, V ACC: 89.88% | ETA:       56 sec                                                  
+EPOCH  11, LR: 6.9519e-05 | T LOSS: 0.0261, T ACC: 91.74%, V LOSS: 0.3028, V ACC: 89.82% | ETA:       57 sec                                                  
+EPOCH  12, LR: 5.4556e-05 | T LOSS: 0.0254, T ACC: 91.76%, V LOSS: 0.3009, V ACC: 89.86% | ETA:       58 sec                                                  
+EPOCH  13, LR: 4.2813e-05 | T LOSS: 0.0247, T ACC: 92.20%, V LOSS: 0.3034, V ACC: 89.73% | ETA:       56 sec                                                  
+EPOCH  14, LR: 3.3598e-05 | T LOSS: 0.0241, T ACC: 92.48%, V LOSS: 0.3009, V ACC: 89.88% | ETA:       56 sec                                                  
+EPOCH  15, LR: 2.6367e-05 | T LOSS: 0.0235, T ACC: 92.68%, V LOSS: 0.2999, V ACC: 90.07% | ETA:       57 sec                                                  
+EPOCH  16, LR: 2.0691e-05 | T LOSS: 0.0232, T ACC: 92.66%, V LOSS: 0.3014, V ACC: 89.98% | ETA:       56 sec                                                  
+EPOCH  17, LR: 1.6238e-05 | T LOSS: 0.0229, T ACC: 92.74%, V LOSS: 0.2991, V ACC: 90.00% | ETA:       56 sec                                                  
+EPOCH  18, LR: 1.2743e-05 | T LOSS: 0.0224, T ACC: 92.88%, V LOSS: 0.3005, V ACC: 89.91% | ETA:       58 sec                                                  
+EPOCH  19, LR: 1.0000e-05 | T LOSS: 0.0221, T ACC: 93.12%, V LOSS: 0.3009, V ACC: 89.87% | ETA:       56 sec                                                  
+(dl-default) ckswjd99@gpu-1:~/workspace/XNOR-Ensemble/src/distill_bw$ python distill_bw.py 
+Teacher: saves/resnet20-12fca82f.th
+Colleagues: ['saves/resnet20_bw_distilled_03_final.pth', 'saves/resnet20_bw_distilled_02_final.pth', 'saves/resnet20_bw_distilled_01_final.pth', 'saves/resnet20_bw_distilled_00_final.pth']
+Current: saves/resnet20_bw_distilled_04.pth
+Files already downloaded and verified
+Teacher: V LOSS: 0.3727, V ACC: 91.73%                                                                                                                        
+Colleague saves/resnet20_bw_distilled_03_final.pth: V LOSS: 0.3965, V ACC: 87.33%                                                                             
+Colleague saves/resnet20_bw_distilled_02_final.pth: V LOSS: 0.3682, V ACC: 88.55%                                                                             
+Colleague saves/resnet20_bw_distilled_01_final.pth: V LOSS: 0.4923, V ACC: 84.26%                                                                             
+Colleague saves/resnet20_bw_distilled_00_final.pth: V LOSS: 0.3867, V ACC: 87.92%                                                                             
+EPOCH   0, LR: 1.0000e-03 | T LOSS: 0.0878, T ACC: 72.03%, V LOSS: 0.3075, V ACC: 89.55% | ETA:       61 sec                                                  
+EPOCH   1, LR: 7.8476e-04 | T LOSS: 0.0481, T ACC: 84.03%, V LOSS: 0.3012, V ACC: 89.95% | ETA:       60 sec                                                  
+EPOCH   2, LR: 6.1585e-04 | T LOSS: 0.0411, T ACC: 86.48%, V LOSS: 0.2972, V ACC: 90.01% | ETA:       61 sec                                                  
+EPOCH   3, LR: 4.8329e-04 | T LOSS: 0.0370, T ACC: 87.91%, V LOSS: 0.2997, V ACC: 89.80% | ETA:       60 sec                                                  
+EPOCH   4, LR: 3.7927e-04 | T LOSS: 0.0347, T ACC: 88.83%, V LOSS: 0.2965, V ACC: 90.13% | ETA:       62 sec                                                  
+EPOCH   5, LR: 2.9764e-04 | T LOSS: 0.0330, T ACC: 89.29%, V LOSS: 0.2976, V ACC: 89.97% | ETA:       61 sec                                                  
+EPOCH   6, LR: 2.3357e-04 | T LOSS: 0.0306, T ACC: 90.19%, V LOSS: 0.2980, V ACC: 90.00% | ETA:       59 sec                                                  
+EPOCH   7, LR: 1.8330e-04 | T LOSS: 0.0297, T ACC: 90.54%, V LOSS: 0.2963, V ACC: 90.16% | ETA:       61 sec                                                  
+EPOCH   8, LR: 1.4384e-04 | T LOSS: 0.0284, T ACC: 90.97%, V LOSS: 0.2964, V ACC: 90.13% | ETA:       62 sec                                                  
+EPOCH   9, LR: 1.1288e-04 | T LOSS: 0.0276, T ACC: 91.13%, V LOSS: 0.2941, V ACC: 90.22% | ETA:       59 sec                                                  
+EPOCH  10, LR: 8.8587e-05 | T LOSS: 0.0269, T ACC: 91.51%, V LOSS: 0.2965, V ACC: 90.01% | ETA:       61 sec                                                  
+EPOCH  11, LR: 6.9519e-05 | T LOSS: 0.0263, T ACC: 91.88%, V LOSS: 0.2933, V ACC: 90.17% | ETA:       61 sec                                                  
+EPOCH  12, LR: 5.4556e-05 | T LOSS: 0.0255, T ACC: 92.16%, V LOSS: 0.2954, V ACC: 90.12% | ETA:       60 sec                                                  
+EPOCH  13, LR: 4.2813e-05 | T LOSS: 0.0250, T ACC: 92.22%, V LOSS: 0.2952, V ACC: 90.17% | ETA:       61 sec                                                  
+EPOCH  14, LR: 3.3598e-05 | T LOSS: 0.0240, T ACC: 92.68%, V LOSS: 0.2930, V ACC: 90.31% | ETA:       61 sec                                                  
+EPOCH  15, LR: 2.6367e-05 | T LOSS: 0.0242, T ACC: 92.60%, V LOSS: 0.2915, V ACC: 90.27% | ETA:       60 sec                                                  
+EPOCH  16, LR: 2.0691e-05 | T LOSS: 0.0236, T ACC: 92.87%, V LOSS: 0.2954, V ACC: 90.25% | ETA:       62 sec                                                  
+EPOCH  17, LR: 1.6238e-05 | T LOSS: 0.0233, T ACC: 92.91%, V LOSS: 0.2963, V ACC: 90.21% | ETA:       59 sec                                                  
+EPOCH  18, LR: 1.2743e-05 | T LOSS: 0.0228, T ACC: 93.10%, V LOSS: 0.2936, V ACC: 90.19% | ETA:       57 sec                                                  
+EPOCH  19, LR: 1.0000e-05 | T LOSS: 0.0228, T ACC: 93.11%, V LOSS: 0.2963, V ACC: 90.07% | ETA:       61 sec                  
+(dl-default) ckswjd99@gpu-1:~/workspace/XNOR-Ensemble/src/distill_bw$ python distill_bw.py 
+Teacher: saves/resnet20-12fca82f.th
+Colleagues: ['saves/resnet20_bw_distilled_03_final.pth', 'saves/resnet20_bw_distilled_04_final.pth', 'saves/resnet20_bw_distilled_02_final.pth', 'saves/resnet20_bw_distilled_01_final.pth', 'saves/resnet20_bw_distilled_00_final.pth']
+Current: saves/resnet20_bw_distilled_05.pth
+Files already downloaded and verified
+Teacher: V LOSS: 0.3727, V ACC: 91.73%                                                                                                                        
+Colleague saves/resnet20_bw_distilled_03_final.pth: V LOSS: 0.3965, V ACC: 87.33%                                                                             
+Colleague saves/resnet20_bw_distilled_04_final.pth: V LOSS: 0.4129, V ACC: 86.66%                                                                             
+Colleague saves/resnet20_bw_distilled_02_final.pth: V LOSS: 0.3682, V ACC: 88.55%                                                                             
+Colleague saves/resnet20_bw_distilled_01_final.pth: V LOSS: 0.4923, V ACC: 84.26%                                                                             
+Colleague saves/resnet20_bw_distilled_00_final.pth: V LOSS: 0.3867, V ACC: 87.92%                                                                             
+  0%|                                                                                                                                 | 0/391 [00:00<?, ?it/s]/home/ckswjd99/anaconda3/envs/dl-default/lib/python3.10/site-packages/torch/nn/functional.py:2994: UserWarning: reduction: 'mean' divides the total loss by both the batch size and the support size.'batchmean' divides only by the batch size, and aligns with the KL div math definition.'mean' will be changed to behave the same as 'batchmean' in the next major release.
+  warnings.warn(
+EPOCH   0, LR: 1.0000e-03 | T LOSS: 0.0874, T ACC: 72.00%, V LOSS: 0.2965, V ACC: 90.07% | ETA:       64 sec                                                  
+EPOCH   1, LR: 7.8476e-04 | T LOSS: 0.0488, T ACC: 83.81%, V LOSS: 0.2946, V ACC: 90.31% | ETA:       63 sec                                                  
+EPOCH   2, LR: 6.1585e-04 | T LOSS: 0.0417, T ACC: 86.33%, V LOSS: 0.2948, V ACC: 90.16% | ETA:       63 sec                                                  
+EPOCH   3, LR: 4.8329e-04 | T LOSS: 0.0372, T ACC: 87.98%, V LOSS: 0.2933, V ACC: 90.21% | ETA:       63 sec                                                  
+EPOCH   4, LR: 3.7927e-04 | T LOSS: 0.0354, T ACC: 88.67%, V LOSS: 0.2934, V ACC: 90.38% | ETA:       61 sec                                                  
+EPOCH   5, LR: 2.9764e-04 | T LOSS: 0.0328, T ACC: 89.42%, V LOSS: 0.2887, V ACC: 90.48% | ETA:       63 sec                                                  
+EPOCH   6, LR: 2.3357e-04 | T LOSS: 0.0316, T ACC: 89.86%, V LOSS: 0.2960, V ACC: 90.31% | ETA:       59 sec                                                  
+EPOCH   7, LR: 1.8330e-04 | T LOSS: 0.0300, T ACC: 90.46%, V LOSS: 0.2923, V ACC: 90.42% | ETA:       63 sec                                                  
+EPOCH   8, LR: 1.4384e-04 | T LOSS: 0.0292, T ACC: 90.87%, V LOSS: 0.2897, V ACC: 90.56% | ETA:       60 sec                                                  
+EPOCH   9, LR: 1.1288e-04 | T LOSS: 0.0281, T ACC: 91.19%, V LOSS: 0.2895, V ACC: 90.51% | ETA:       65 sec                                                  
+EPOCH  10, LR: 8.8587e-05 | T LOSS: 0.0273, T ACC: 91.56%, V LOSS: 0.2916, V ACC: 90.26% | ETA:       61 sec                                                  
+EPOCH  11, LR: 6.9519e-05 | T LOSS: 0.0264, T ACC: 91.72%, V LOSS: 0.2888, V ACC: 90.35% | ETA:       63 sec                                                  
+EPOCH  12, LR: 5.4556e-05 | T LOSS: 0.0258, T ACC: 92.06%, V LOSS: 0.2896, V ACC: 90.45% | ETA:       62 sec                                                  
+EPOCH  13, LR: 4.2813e-05 | T LOSS: 0.0251, T ACC: 92.22%, V LOSS: 0.2888, V ACC: 90.44% | ETA:       63 sec                                                  
+EPOCH  14, LR: 3.3598e-05 | T LOSS: 0.0250, T ACC: 92.28%, V LOSS: 0.2903, V ACC: 90.34% | ETA:       63 sec                                                  
+EPOCH  15, LR: 2.6367e-05 | T LOSS: 0.0243, T ACC: 92.71%, V LOSS: 0.2888, V ACC: 90.42% | ETA:       61 sec                                                  
+EPOCH  16, LR: 2.0691e-05 | T LOSS: 0.0240, T ACC: 92.67%, V LOSS: 0.2890, V ACC: 90.53% | ETA:       63 sec                                                  
+EPOCH  17, LR: 1.6238e-05 | T LOSS: 0.0234, T ACC: 92.93%, V LOSS: 0.2886, V ACC: 90.40% | ETA:       60 sec                                                  
+EPOCH  18, LR: 1.2743e-05 | T LOSS: 0.0228, T ACC: 93.28%, V LOSS: 0.2900, V ACC: 90.34% | ETA:       63 sec                                                  
+EPOCH  19, LR: 1.0000e-05 | T LOSS: 0.0232, T ACC: 92.99%, V LOSS: 0.2873, V ACC: 90.39% | ETA:       60 sec            

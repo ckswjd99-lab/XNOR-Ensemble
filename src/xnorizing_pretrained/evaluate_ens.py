@@ -11,11 +11,14 @@ from dataloader import get_imnet1k_dataloader
 
 
 CHECKPOINT_PATHS = [
-    './saves/fs_resnet18d.ra2_in1k_bw_best.pth',
-    './saves/fs_resnet18d.ra2_in1k_bw_e4_best.pth',
+    # './saves/fs_resnet18d.ra2_in1k_bw_best.pth',
+    # './saves/fs_resnet18d.ra2_in1k_bw_e4_best.pth',
     # './saves/ft_resnet18d_ra2_in1k_wb_best.pth',
     # './saves/ft_resnet18d.ra2_in1k_bw_e6_best.pth',
     # './saves/ft_resnet18d.ra2_in1k_bw_e4toe6_best.pth'
+    './saves/ft_resnet50.a1_in1k_bw_best.pth',
+    # './saves/ft_resnet50.a1_in1k_bw_e3toe5_01_best.pth',
+    # './saves/ft_resnet50.a1_in1k_bw_e3toe6_best.pth',
 ]
 BATCH_SIZE = 128
 
@@ -53,15 +56,16 @@ def validate(epoch, model_list, test_loader, criterion):
     return avg_loss, accuracy
 
 
-models = [timm.create_model('resnet18d.ra2_in1k', pretrained=False).cuda() for _ in range(len(CHECKPOINT_PATHS))]
+# models = [timm.create_model('resnet18d.ra2_in1k', pretrained=False).cuda() for _ in range(len(CHECKPOINT_PATHS))]
+models = [timm.create_model('resnet50.a1_in1k', pretrained=False).cuda() for _ in range(len(CHECKPOINT_PATHS))]
 
 num_params = sum(p.numel() for p in models[0].parameters())
 print(f"Number of parameters: {num_params:,d}")
 
 bin_ops = [BinOp(model) for model in models]
 
-# criterion = nn.CrossEntropyLoss().cuda()
-criterion = nn.NLLLoss().cuda()
+criterion = nn.CrossEntropyLoss().cuda()
+# criterion = nn.NLLLoss().cuda()
 
 for model, checkpoint, bin_op in zip(models, CHECKPOINT_PATHS, bin_ops):
     checkpoint = torch.load(checkpoint)

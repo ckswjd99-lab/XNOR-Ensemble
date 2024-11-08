@@ -12,13 +12,11 @@ from trainer import train, validate
 BATCH_SIZE = 128
 EPOCHS = 200
 LR_START = 1e-3
-# LR_START = 1e-4
 LR_END = 1e-5
-# LR_END = 1e-6
 # MODEL_NAME = 'resnet18d.ra2_in1k'
 MODEL_NAME = 'resnet50.a1_in1k'
 # CKPT_NAME = f'ft_{MODEL_NAME}_bw.pth'
-CKPT_NAME = f'ft_{MODEL_NAME}_bw_e4toe6.pth'
+CKPT_NAME = f'ft_{MODEL_NAME}_bw_02.pth'
 
 RESUME_CHECKPOINT = None
 # RESUME_CHECKPOINT = './saves/ft_resnet18d_ra2_in1k_xnorized.pth'
