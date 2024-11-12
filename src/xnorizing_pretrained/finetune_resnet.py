@@ -16,7 +16,7 @@ LR_END = 1e-5
 # MODEL_NAME = 'resnet18d.ra2_in1k'
 MODEL_NAME = 'resnet50.a1_in1k'
 # CKPT_NAME = f'ft_{MODEL_NAME}_bw.pth'
-CKPT_NAME = f'ft_{MODEL_NAME}_bw_02.pth'
+CKPT_NAME = f'ft_{MODEL_NAME}_bw_03.pth'
 
 RESUME_CHECKPOINT = None
 # RESUME_CHECKPOINT = './saves/ft_resnet18d_ra2_in1k_xnorized.pth'

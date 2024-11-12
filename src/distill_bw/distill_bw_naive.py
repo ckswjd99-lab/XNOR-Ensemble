@@ -18,8 +18,9 @@ LR_END = 1e-5
 SOFTENING = 0.0
 
 TEACHER_CKPT = "saves/resnet20-12fca82f.th"
-COLLEAGUES_CKPTS = ['saves/' + f for f in os.listdir('saves') if f.startswith("resnet20_bw_dist_naive_") and f.endswith("_final.pth")]
-CURRENT_CKPT = f"saves/resnet20_bw_dist_naive_{len(COLLEAGUES_CKPTS):02d}.pth"
+PREFIX = "resnet20_bw_dist_alltrain"
+COLLEAGUES_CKPTS = ['saves/' + f for f in os.listdir('saves') if f.startswith(PREFIX) and f.endswith("_final.pth")]
+CURRENT_CKPT = f"saves/{PREFIX}_{len(COLLEAGUES_CKPTS):02d}.pth"
 
 print(f"Teacher: {TEACHER_CKPT}")
 print(f"Current: {CURRENT_CKPT}")
@@ -32,7 +33,7 @@ MODEL_ARCH = resnet20
 train_loader, val_loader = get_CIFAR10_dataset(root='../data', batch_size=BATCH_SIZE)
 
 criterion_xent = nn.CrossEntropyLoss().cuda()
-criterion_kld = nn.KLDivLoss(reduction='batchmean').cuda()
+# criterion_kld = nn.KLDivLoss(reduction='batchmean').cuda()
 
 
 # LOAD TEACHER
@@ -66,7 +67,8 @@ def criterion_distill(student_output, teacher_output, target):
     return kld
 
 training_params_dict = dict(student.named_parameters())
-training_params_names = [name for name, param in training_params_dict.items() if 'module.conv1' not in name and 'module.linear' not in name]
+# training_params_names = [name for name, param in training_params_dict.items() if 'module.conv1' not in name and 'module.linear' not in name]
+training_params_names = [name for name, param in training_params_dict.items()]
 training_params = [training_params_dict[name] for name in training_params_names]
 print(f"Training params: {len(training_params)}")
 print(training_params_names)
@@ -98,7 +100,8 @@ for epoch in range(EPOCHS):
 
         student_output = student(input)
 
-        loss = criterion_distill(student_output, teacher_output, target)
+        # loss = criterion_distill(student_output, teacher_output, target)
+        loss = criterion_xent(student_output, target)
 
         loss.backward()
 

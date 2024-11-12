@@ -51,7 +51,7 @@ def train(epoch, model, train_loader, optimizer, criterion, bin_op):
 @torch.no_grad()
 def validate(epoch, model, test_loader, criterion, bin_op):
     model.eval()
-    bin_op.binarization()
+    # bin_op.binarization()
     
     num_data = 0
     num_correct = 0
@@ -74,7 +74,7 @@ def validate(epoch, model, test_loader, criterion, bin_op):
 
         pbar.set_description(f"EPOCH {epoch:3d} | V LOSS: {avg_loss:.4f}, V ACC: {accuracy*100:.4f}%")
 
-    bin_op.restore()
+    # bin_op.restore()
     avg_loss = sum_loss / num_data
     accuracy = num_correct / num_data
     

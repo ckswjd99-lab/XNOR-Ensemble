@@ -17,7 +17,8 @@ CHECKPOINT_PATHS = [
     # './saves/ft_resnet18d.ra2_in1k_bw_e6_best.pth',
     # './saves/ft_resnet18d.ra2_in1k_bw_e4toe6_best.pth'
     './saves/ft_resnet50.a1_in1k_bw_best.pth',
-    # './saves/ft_resnet50.a1_in1k_bw_e3toe5_01_best.pth',
+    './saves/ft_resnet50.a1_in1k_bw_02_best.pth',
+    './saves/ft_resnet50.a1_in1k_bw_e3toe5_01_best.pth',
     # './saves/ft_resnet50.a1_in1k_bw_e3toe6_best.pth',
 ]
 BATCH_SIZE = 128
@@ -36,7 +37,8 @@ def validate(epoch, model_list, test_loader, criterion):
 
         data, target = data.cuda(), target.cuda()
                                     
-        outputs = [nn.Softmax(dim=1)(model(data)) for model in model_list]
+        # outputs = [nn.Softmax(dim=1)(model(data)) for model in model_list]
+        outputs = [model(data) for model in model_list]
         output = sum(outputs) / len(model_list)
         loss = criterion(output, target)
         
