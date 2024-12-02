@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torchvision
 
 import timm
 import time
@@ -14,22 +15,23 @@ EPOCHS = 200
 LR_START = 1e-3
 LR_END = 1e-5
 # MODEL_NAME = 'resnet18d.ra2_in1k'
-MODEL_NAME = 'resnet50.a1_in1k'
+# MODEL_NAME = 'resnet50.a1_in1k'
+MODEL_NAME = 'resnet18.torchvision_v1'
 # CKPT_NAME = f'ft_{MODEL_NAME}_bw.pth'
-CKPT_NAME = f'ft_{MODEL_NAME}_bw_03.pth'
+CKPT_NAME = f'ft_{MODEL_NAME}_bw_04.pth'
 
 RESUME_CHECKPOINT = None
 # RESUME_CHECKPOINT = './saves/ft_resnet18d_ra2_in1k_xnorized.pth'
+# RESUME_CHECKPOINT = './saves/ft_resnet50.a1_in1k_bw_04.pth'
 
-model = timm.create_model(MODEL_NAME, pretrained=True).cuda()
+# model = timm.create_model(MODEL_NAME, pretrained=True).cuda()
+model = torchvision.models.resnet18(weights=torchvision.models.ResNet18_Weights.IMAGENET1K_V1).cuda()
 # model = xnorize_conv2d(model).cuda()
 
 print(model)
 
 num_params = sum(p.numel() for p in model.parameters())
 print(f"Number of parameters: {num_params:,d}")
-
-bin_op = BinOp(model)
 
 criterion = nn.CrossEntropyLoss().cuda()
 optimizer = torch.optim.Adam(model.parameters(), lr=LR_START, weight_decay=1e-5)
@@ -47,6 +49,8 @@ if RESUME_CHECKPOINT:
     scheduler.load_state_dict(checkpoint['scheduler'])
     best_vacc = checkpoint['best_vacc']
     start_epoch = checkpoint['epoch']
+
+bin_op = BinOp(model)
 
 for epoch in range(start_epoch, EPOCHS):
     start_time = time.time()
